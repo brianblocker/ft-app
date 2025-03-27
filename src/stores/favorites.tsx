@@ -1,17 +1,29 @@
+'use client'
+
 import { create } from 'zustand'
 
 interface FavoritesStore {
   favorites: Set<string>
-  toggleFavorite: (id: string) => void
+  addFavorite: (id: string) => void
+  removeFavorite: (id: string) => void
+  setFavorites: (favorites: Set<string>) => void
 }
 
 export const useFavoritesStore = create<FavoritesStore>((set) => ({
   favorites: new Set(),
-  toggleFavorite: (id) => set((prevState) => {
+  addFavorite: (id) => set((prevState) => {
     const favorites = new Set(prevState.favorites)
 
-    favorites.has(id) ? favorites.delete(id) : favorites.add(id)
+    favorites.add(id)
 
     return { favorites }
   }),
+  removeFavorite: (id) => set((prevState) => {
+    const favorites = new Set(prevState.favorites)
+
+    favorites.delete(id)
+
+    return { favorites }
+  }),
+  setFavorites: (favorites: Set<string>) => set({ favorites }),
 }))
