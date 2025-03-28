@@ -35,6 +35,7 @@ export const TokenCard = ({ token }: { token: Token }) => {
         </Box>
         <Box className="ml-auto">
           <IconButton
+            data-testid="favorite-button"
             variant="ghost"
             color="gray"
             disabled={isPending}
@@ -42,9 +43,9 @@ export const TokenCard = ({ token }: { token: Token }) => {
             className="transition-colors duration-200 hover:bg-gray-100"
           >
             {isFavorite ? (
-              <HeartFilledIcon className="w-5 h-5" color="white" />
+              <HeartFilledIcon data-testid="favorite-icon" className="w-5 h-5" color="white" />
             ) : (
-              <HeartIcon className="w-5 h-5" color="gray" />
+              <HeartIcon data-testid="unfavorite-icon" className="w-5 h-5" color="gray" />
             )}
           </IconButton>
         </Box>

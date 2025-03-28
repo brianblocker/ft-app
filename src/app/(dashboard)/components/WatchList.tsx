@@ -22,6 +22,8 @@ export const WatchList = () => {
 
   const favoritesArray = Array.from(favorites)
 
+  // @todo: The watchlist should display in order of when it was added
+  // to the watchlist, not the order of the API response.
   const { data } = useQuery({
     queryKey: ['watchlist', ...favoritesArray],
     queryFn: () =>
