@@ -1,7 +1,6 @@
 'use client'
 
-import mockData from "./mock-data.json"
-import { Table } from "@radix-ui/themes"
+import { Skeleton, Table } from "@radix-ui/themes"
 import { Monetary, FormattedPercentage } from "@/components/ui/Numbers"
 import { useMemo } from "react"
 import { useFavoritesSync } from "@/hooks/favorites"
@@ -14,6 +13,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import axios from "axios"
+import { useQuery } from "@tanstack/react-query"
 
 /**
  * Architectural note - This table should be virtualized so that we only render
@@ -30,21 +31,23 @@ export const Retriever = () => {
   // @todo: with a little more time I'd like to actually add filtering
   // and searching to this table, because nobody ever likes getting
   // to page 5 of a table.
-  /*const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () =>
-      axios.get('https://api.coingecko.com/api/v3/coins/markets', {
+      axios.get<Token[]>('https://api.coingecko.com/api/v3/coins/markets', {
         params: {
           vs_currency: 'usd',
+          price_change_percentage: '24h',
           per_page: 100,
         },
         headers: {
           accept: 'application/json',
           'x-cg-demo-api-key': 'CG-4Toj2wKfvZoZW66uiUpCFkBQ',
         },
-      }),
+      }).then(res => res.data),
     enabled: true,
-  })*/
+    staleTime: (1000 * 60), // refresh every 60 seconds
+  })
 
   const columns = useMemo<ColumnDef<Token>[]>(() => [
     {
@@ -89,10 +92,14 @@ export const Retriever = () => {
   ], [])
 
   const table = useReactTable({
-    data: mockData,
+    data: data || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
+
+  if (isLoading) {
+    return <Skeleton className="w-full h-full min-h-[88px] min-w-[100px]" />
+  }
 
   return (
     <Table.Root size="1" className="h-[calc(50vh)]">
